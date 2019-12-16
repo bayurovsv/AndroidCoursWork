@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/create_img"
+        android:orderInCategory="1"
+        android:title="Получить изображение" />
+    <item
+        android:id="@+id/binaris"
+        android:orderInCategory="2"
+        android:title="Бинаризация" />
+    <item
+        android:id="@+id/counter"
+        android:orderInCategory="3"
+        android:title="Поиск контура" />
+</menu>
