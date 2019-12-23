@@ -200,34 +200,51 @@ public class MainActivity extends AppCompatActivity {
         ft.Search_contr(img);
         imageView.setImageBitmap(ft.pm);
     }
-
     /**
      * Получение чарактеристик контура
      */
     public void charact_img(){
-        ft.Search_for_connected_points();
-        ft.Curvature_calculation_points_counter();
-        dlN1.setText(String.valueOf(ft.dlN1));
-        dlN2.setText(String.valueOf(ft.dlN2));
-        dlN3.setText(String.valueOf(ft.dlN3));
-        dlN4.setText(String.valueOf(ft.dlN4));
-        dlN5.setText(String.valueOf(ft.dlN5));
-        dlN6.setText(String.valueOf(ft.dlN6));
-        dlN7.setText(String.valueOf(ft.dlN7));
-        dlN8.setText(String.valueOf(ft.dlN8));
-        dlvp.setText(String.valueOf((ft.dlvp90+ft.dlvp135)));
-        dlvg.setText(String.valueOf((ft.dlvg90+ft.dlvg135)));
-        dlvg90.setText(String.valueOf(ft.dlvg90));
-        dlvp90.setText(String.valueOf(ft.dlvp90));
-        dlvg135.setText(String.valueOf(ft.dlvg135));
-        dlvp135.setText(String.valueOf(ft.dlvp135));
-        dlcon.setText(String.valueOf(ft.dlcon));
-        cr0.setText(String.valueOf(ft.cr0));
+        int[] num_st = ft.Search_for_connected_points(ft.list);
+        int[] sign = ft.Curvature_calculation_points_counter(ft.list);
+        dlN1.setText(String.valueOf(num_st[0]));
+        dlN2.setText(String.valueOf(num_st[1]));
+        dlN3.setText(String.valueOf(num_st[2]));
+        dlN4.setText(String.valueOf(num_st[3]));
+        dlN5.setText(String.valueOf(num_st[4]));
+        dlN6.setText(String.valueOf(num_st[5]));
+        dlN7.setText(String.valueOf(num_st[6]));
+        dlN8.setText(String.valueOf(num_st[7]));
+        dlvp.setText(String.valueOf((sign[0]+sign[2])));
+        dlvg.setText(String.valueOf((sign[1]+sign[3])));
+        dlvg90.setText(String.valueOf(sign[1]));
+        dlvp90.setText(String.valueOf(sign[0]));
+        dlvg135.setText(String.valueOf(sign[3]));
+        dlvp135.setText(String.valueOf(sign[2]));
+        dlcon.setText(String.valueOf(num_st[0]+num_st[1]+num_st[2]+num_st[3]+num_st[4]+num_st[5]+num_st[6]+num_st[7]));
+        cr0.setText(String.valueOf(sign[4]));
+        Save_Result sr= new Save_Result();
+        String[] specifications = new String[16];
+        specifications[0] = "Р”Р»РёРЅС‹ РѕС‚СЂРµР·РєРѕРІ РЅР°РїСЂР°РІР»РµРЅРёСЏ N1: " + String.valueOf(num_st[0])+'\n';
+        specifications[1] = "Р”Р»РёРЅС‹ РѕС‚СЂРµР·РєРѕРІ РЅР°РїСЂР°РІР»РµРЅРёСЏ N2: " + String.valueOf(num_st[1])+'\n';
+        specifications[2] = "Р”Р»РёРЅС‹ РѕС‚СЂРµР·РєРѕРІ РЅР°РїСЂР°РІР»РµРЅРёСЏ N3: " + String.valueOf(num_st[2])+'\n';
+        specifications[3] = "Р”Р»РёРЅС‹ РѕС‚СЂРµР·РєРѕРІ РЅР°РїСЂР°РІР»РµРЅРёСЏ N4: " + String.valueOf(num_st[3])+'\n';
+        specifications[4] = "Р”Р»РёРЅС‹ РѕС‚СЂРµР·РєРѕРІ РЅР°РїСЂР°РІР»РµРЅРёСЏ N5: " + String.valueOf(num_st[4])+'\n';
+        specifications[5] = "Р”Р»РёРЅС‹ РѕС‚СЂРµР·РєРѕРІ РЅР°РїСЂР°РІР»РµРЅРёСЏ N6: " + String.valueOf(num_st[5])+'\n';
+        specifications[6] = "Р”Р»РёРЅС‹ РѕС‚СЂРµР·РєРѕРІ РЅР°РїСЂР°РІР»РµРЅРёСЏ N7: " + String.valueOf(num_st[6])+'\n';
+        specifications[7] = "Р”Р»РёРЅС‹ РѕС‚СЂРµР·РєРѕРІ РЅР°РїСЂР°РІР»РµРЅРёСЏ N8: " + String.valueOf(num_st[7])+'\n';
+        specifications[8] = "РљРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕС‡РµРє РєРѕРЅС‚СѓСЂР°, СЏРІР»СЏСЋС‰РёРµСЃСЏ С†РµРЅС‚СЂРѕРј РІС‹РїСѓРєР»С‹С… СѓС‡Р°СЃС‚РєРѕРІ +90: " + String.valueOf(sign[0])+'\n';
+        specifications[9] = "РљРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕС‡РµРє РєРѕРЅС‚СѓСЂР°, СЏРІР»СЏСЋС‰РёРµСЃСЏ С†РµРЅС‚СЂРѕРј РІРѕРіРЅСѓС‚С‹С… СѓС‡Р°СЃС‚РєРѕРІ -90: " + String.valueOf(sign[1])+'\n';
+        specifications[10] = "РљРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕС‡РµРє РєРѕРЅС‚СѓСЂР°, СЏРІР»СЏСЋС‰РёРµСЃСЏ С†РµРЅС‚СЂРѕРј РІС‹РїСѓРєР»С‹С… СѓС‡Р°СЃС‚РєРѕРІ +135: " + String.valueOf(sign[2])+'\n';
+        specifications[11] = "РљРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕС‡РµРє РєРѕРЅС‚СѓСЂР°, СЏРІР»СЏСЋС‰РёРµСЃСЏ С†РµРЅС‚СЂРѕРј РІРѕРіРЅСѓС‚С‹С… СѓС‡Р°СЃС‚РєРѕРІ -135: " + String.valueOf(sign[3])+'\n';
+        specifications[12] = "РљРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕС‡РµРє РЅСѓР»РµРІРѕР№ РєСЂРёРІРёР·РЅС‹: " + String.valueOf(sign[4])+'\n';
+        specifications[13] = "Р”Р»РёРЅР° РєРѕРЅС‚СѓСЂР°: " + String.valueOf(num_st[0]+num_st[1]+num_st[2]+num_st[3]+num_st[4]+num_st[5]+num_st[6]+num_st[7])+'\n';
+        specifications[14] = "РћР±С‰Р°СЏ РґР»РёРЅР° РІС‹РїСѓРєР»С‹С… СѓС‡Р°СЃС‚РєРѕРІ РєСЂРёРІРёР·РЅС‹ +90, +135: " + String.valueOf((sign[0]+sign[2]))+'\n';
+        specifications[15] = "РћР±С‰Р°СЏ РґР»РёРЅР° РІРѕРіРЅСѓС‚С‹С… СѓС‡Р°СЃС‚РєРѕРІ РєСЂРёРІРёР·РЅС‹ -90, -135: " + String.valueOf((sign[1]+sign[3]))+'\n';
+        sr.Save(ft.pm,specifications);
     }
     @Override
     public void onResume() {
         super.onResume();
         //OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, this, mLoaderCallback);
     }
-
 }
