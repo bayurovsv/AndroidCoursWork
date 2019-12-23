@@ -1,45 +1,57 @@
 package com.example.opencv1;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
-import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.utils.Converters;
-
-import java.util.ArrayList;
-
+/**
+ * @version 1.0
+ */
 public class MainActivity extends AppCompatActivity {
     private static int TAKE_PICTURE_REQUEST = 1;
     private static final String TAG = "epp";
     private ImageView imageView;
     private Bitmap thumbnailBitmap;
-
+    private TextView dlN1;
+    private TextView dlN2;
+    private TextView dlN3;
+    private TextView dlN4;
+    private TextView dlN5;
+    private TextView dlN6;
+    private TextView dlN7;
+    private TextView dlN8;
+    private TextView dlvp90;
+    private TextView dlvg90;
+    private TextView dlvp135;
+    private TextView dlvg135;
+    private TextView dlcon;
+    private TextView cr0;
+    private TextView dlvp;
+    private TextView dlvg;
+    private Button bt_con;
+    private Button bt_x;
+    public feature_calculations ft = new feature_calculations();
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+
+        /**
+         * Проверка работы Opencv
+         * @param status флаг проверки
+         */
         @Override
         public void onManagerConnected(int status) {
             switch (status) {
@@ -52,135 +64,170 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+    /**
+     * инициализация компонентов
+     * @param savedInstanceState
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         imageView = findViewById(R.id.imageView);
+        dlN1 = findViewById(R.id.dlN1);
+        dlN2 = findViewById(R.id.dlN2);
+        dlN3 = findViewById(R.id.dlN3);
+        dlN4 = findViewById(R.id.dlN4);
+        dlN5 = findViewById(R.id.dlN5);
+        dlN6 = findViewById(R.id.dlN6);
+        dlN7 = findViewById(R.id.dlN7);
+        dlN8 = findViewById(R.id.dlN8);
+        dlvg90 = findViewById(R.id.dlvg90);
+        dlvp90 = findViewById(R.id.dlvp90);
+        dlvg135 = findViewById(R.id.dlvg135);
+        dlvp135 = findViewById(R.id.dlvp135);
+        dlcon = findViewById(R.id.dlcon);
+        cr0 = findViewById(R.id.cr0);
+        dlvp=findViewById(R.id.odlpv);
+        dlvg=findViewById(R.id.odlpg);
+        bt_con=findViewById(R.id.bt_con);
+        bt_con.setClickable(false);
+        bt_x=findViewById(R.id.bt_x);
+        bt_x.setClickable(false);
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch(id){
-            case R.id.create_img :
-                create_img();
-                return true;
-            case R.id.binaris:
-                b_img();
-                return true;
-            case R.id.counter:
-                counter();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+    /**
+     * Вывод статуса работы Opencv
+     */
     private void initializeOpenCVDependencies() {
-
         try {
             Toast.makeText(this, "openCv successfully loaded", Toast.LENGTH_LONG).show();
-            Log.i(TAG, "Работает");
+            Log.i(TAG, "Ok");
         } catch (Exception e) {
             Toast.makeText(this, "openCv cannot be loaded", Toast.LENGTH_LONG).show();
-            Log.i(TAG, "нет");
+            Log.i(TAG, "NO");
         }
     }
+
+    /**
+     * Открытие изображения
+     * @param view
+     */
     public void onClick_CreateImg(View view)
     {
         create_img();
+        bt_con.setClickable(true);
     }
+
+    /**
+     * Характеристики контура
+     * @param view
+     */
+    public void onClick_Сaharact_Img(View view)
+    {
+        charact_img();
+    }
+
+    /**
+     * Контур изображения
+     * @param view
+     */
+    public void onClick_Search_Counter(View view)
+    {
+        counter();
+        bt_x.setClickable(true);
+    }
+
+    /**
+     * Отображения работы Opencv при открытии камеры
+     */
     private void create_img(){
         getThumbnailPicture();
         if(OpenCVLoader.initDebug()){
             Toast.makeText(this, "openCv successfully loaded", Toast.LENGTH_LONG).show();
-            Log.i(TAG, "Работает");
-            Mat img = new Mat();
+            Log.i(TAG, "OK");
         }else{
             Toast.makeText(this, "openCv cannot be loaded", Toast.LENGTH_LONG).show();
-            Log.i(TAG, "нет");
+            Log.i(TAG, "NO");
         }
     }
-    private void b_img(){
-        Mat ImageMat = new Mat(thumbnailBitmap.getHeight(), thumbnailBitmap.getWidth(), CvType.CV_8U, new Scalar(4));
-        Bitmap myBitmap32 = thumbnailBitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Utils.bitmapToMat(myBitmap32, ImageMat);
-        toBlack_and_While(ImageMat);
-    }
+
+    /**
+     * Отображение контура изображения
+     */
     private void counter(){
         Mat ImageMat = new Mat(thumbnailBitmap.getHeight(), thumbnailBitmap.getWidth(), CvType.CV_8U, new Scalar(4));
         Bitmap myBitmap32 = thumbnailBitmap.copy(Bitmap.Config.ARGB_8888, true);
         Utils.bitmapToMat(myBitmap32, ImageMat);
-        Search_contr(ImageMat);
+        ser_contr(ImageMat);
     }
+
+    /**
+     * Получение изображения с камеры
+     * @param requestCode флаг проверки ответа камеры
+     * @param resultCode флаг проверки получения изображения
+     * @param data изображение полученное с камеры
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TAKE_PICTURE_REQUEST && resultCode == RESULT_OK) {
             if (data != null) {
                 if (data.hasExtra("data")) {
-                    thumbnailBitmap = data.getParcelableExtra("data");
+                    Bundle extras = data.getExtras();
+                    thumbnailBitmap = (Bitmap) extras.get("data");
                     imageView.setImageBitmap(thumbnailBitmap);
                 }
             }
         }
     }
+
+    /**
+     * Открытие камеры
+     */
     private void getThumbnailPicture() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, TAKE_PICTURE_REQUEST);
     }
-public void Search_contr(Mat img){
-    Mat imgGray = new Mat();
-    Imgproc.cvtColor(img, imgGray, Imgproc.COLOR_BGR2GRAY);
-    Mat edges = new Mat();
-    Imgproc.Canny(imgGray, edges, 80, 200);
-    Mat edgesCopy = edges.clone();
-    ArrayList<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-    Mat hierarchy = new Mat();
-    Imgproc.findContours(edgesCopy, contours, hierarchy,Imgproc.RETR_TREE,Imgproc.CHAIN_APPROX_SIMPLE);
-    double maxVal = 0;
-    int maxValIdx = 0;
-    for (int contourIdx = 0; contourIdx < contours.size(); contourIdx++)
+
+    /**
+     * Поиск контура
+     * @param img изображение в матричном виде
+     */
+    public void ser_contr(Mat img)
     {
-        double contourArea = Imgproc.contourArea(contours.get(contourIdx));
-        if (maxVal < contourArea)
-        {
-            maxVal = contourArea;
-            maxValIdx = contourIdx;
-        }
+        ft.Search_contr(img);
+        imageView.setImageBitmap(ft.pm);
     }
-    Imgproc.drawContours(img, contours, maxValIdx, new Scalar(255,0,0));
-    ArrayList<Point> list = new ArrayList<Point>();
-    Converters.Mat_to_vector_Point(contours.get(maxValIdx), list); System.out.println(list); // [{0.0, 0.0}, {1.0, 1.0}]
 
-    contours.get(maxValIdx).fromArray();
-    Toast.makeText(this, ""+contours.get(maxValIdx), Toast.LENGTH_LONG).show();
-
-    System.out.println(Imgproc.contourArea(contours.get(maxValIdx)));
-    System.out.println(Imgproc.arcLength(new MatOfPoint2f(contours.get(maxValIdx).toArray()), true));
-
-    Bitmap resultBitmap = Bitmap.createBitmap(img.cols(), img.rows(), Bitmap.Config.ARGB_8888);
-    Utils.matToBitmap(img, resultBitmap);
-    imageView.setImageBitmap(resultBitmap);
-}
-    public void toBlack_and_While(Mat img) {
-        Mat image = new Mat();
-        Imgproc.cvtColor(img, image,Imgproc.COLOR_BGR2GRAY);
-        Mat image_binary=new Mat();
-        Imgproc.threshold(image,image_binary,80,200,Imgproc.THRESH_BINARY);
-        Bitmap resultBitmap = Bitmap.createBitmap(image_binary.cols(), image_binary.rows(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(image_binary, resultBitmap);
-        thumbnailBitmap= resultBitmap;
-        imageView.setImageBitmap(resultBitmap);
+    /**
+     * Получение чарактеристик контура
+     */
+    public void charact_img(){
+        ft.Search_for_connected_points();
+        ft.Curvature_calculation_points_counter();
+        dlN1.setText(String.valueOf(ft.dlN1));
+        dlN2.setText(String.valueOf(ft.dlN2));
+        dlN3.setText(String.valueOf(ft.dlN3));
+        dlN4.setText(String.valueOf(ft.dlN4));
+        dlN5.setText(String.valueOf(ft.dlN5));
+        dlN6.setText(String.valueOf(ft.dlN6));
+        dlN7.setText(String.valueOf(ft.dlN7));
+        dlN8.setText(String.valueOf(ft.dlN8));
+        dlvp.setText(String.valueOf((ft.dlvp90+ft.dlvp135)));
+        dlvg.setText(String.valueOf((ft.dlvg90+ft.dlvg135)));
+        dlvg90.setText(String.valueOf(ft.dlvg90));
+        dlvp90.setText(String.valueOf(ft.dlvp90));
+        dlvg135.setText(String.valueOf(ft.dlvg135));
+        dlvp135.setText(String.valueOf(ft.dlvp135));
+        dlcon.setText(String.valueOf(ft.dlcon));
+        cr0.setText(String.valueOf(ft.cr0));
     }
     @Override
     public void onResume() {
         super.onResume();
-       // OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, this, mLoaderCallback);
+        //OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, this, mLoaderCallback);
     }
+
 }
